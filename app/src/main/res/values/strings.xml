@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">HsExercise</string>
+    <string name="card_preview_image">Preview image</string>
+    <string name="error_state_image">Error state image</string>
+    <string name="image_dimensions">Width: %1$d\nHeight: %2$d</string>
+    <string name="error_state">Something went wrong. Please check your network connection or try again in a few minutes.</string>
+    <string name="empty_state">Sorry, no data so far.</string>
+</resources>

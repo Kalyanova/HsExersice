@@ -1,0 +1,25 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="CommonTextStyle" parent="android:Widget.TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="CardTitleTextStyle" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/card_title_height</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CardDescTextStyle" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/card_desc_height</item>
+    </style>
+
+</resources>

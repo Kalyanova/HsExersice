@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="common_margin">8dp</dimen>
+
+    <dimen name="card_spacing">8dp</dimen>
+    <dimen name="card_side_margin">16dp</dimen>
+    <dimen name="card_elevation">8dp</dimen>
+    <dimen name="card_radius">4dp</dimen>
+    <dimen name="card_height">314dp</dimen> <!-- 194+44+52+24=314 -->
+    <dimen name="card_image_height">194dp</dimen>
+    <dimen name="card_title_space_height">44dp</dimen>
+    <dimen name="card_desc_space_height">52dp</dimen> <!-- 2 lines -->
+    <dimen name="card_bottom_space_height">24dp</dimen>
+    <dimen name="card_title_height">21sp</dimen>
+    <dimen name="card_desc_height">17sp</dimen>
+</resources>
