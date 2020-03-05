@@ -15,9 +15,47 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/pagesLayout"
         tools:listitem="@layout/picture_item"
         tools:itemCount="6" />
+
+    <LinearLayout
+        android:id="@+id/pagesLayout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/picturesList">
+
+        <Button
+            android:id="@+id/previousPageBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/previous_page"
+            android:layout_marginStart="@dimen/common_margin"
+            android:layout_marginTop="@dimen/common_margin"
+            android:layout_marginEnd="@dimen/common_margin"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/nextPageBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/next_page"
+            android:layout_marginStart="@dimen/common_margin"
+            android:layout_marginTop="@dimen/common_margin"
+            android:layout_marginEnd="@dimen/common_margin"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:ignore="ButtonStyle" />
+
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -26,6 +64,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/pagesLayout"
         app:layout_constraintWidth_percent="0.3"
         tools:visibility="visible" />
 

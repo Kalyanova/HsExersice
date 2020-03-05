@@ -8,5 +8,5 @@ import retrofit2.http.Query
 interface ApiService {
 
     @GET("v2/list")
-    fun getPicturesAsync(@Query("page") page: String): Deferred<List<FeatureModel>>
+    fun getPicturesAsync(@Query("page") pageNumber: Int): Deferred<List<FeatureModel>>
 }

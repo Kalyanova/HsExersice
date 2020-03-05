@@ -5,4 +5,6 @@
     <string name="image_dimensions">Width: %1$d\nHeight: %2$d</string>
     <string name="error_state">Something went wrong. Please check your network connection or try again in a few minutes.</string>
     <string name="empty_state">Sorry, no data so far.</string>
+    <string name="previous_page">&lt;&lt; Previous</string>
+    <string name="next_page">Next &gt;&gt;</string>
 </resources>

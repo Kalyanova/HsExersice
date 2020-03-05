@@ -4,6 +4,8 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.util.Log
+import android.view.View.INVISIBLE
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
@@ -22,9 +24,12 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
             with(viewModel) {
-                val data = response.value
-                if (data.isNullOrEmpty()) {
+                val isLoadingStarted = loading.value ?: false
+                val isErrorOccurred = error.value ?: false
+                if (!isLoadingStarted && isErrorOccurred) {
+                    Log.d(TAG, "Network is available. Let's try to reload pictures.")
                     loadPictures()
+                    clearErrorState()
                 }
             }
         }
@@ -46,20 +51,41 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
 
         viewModel.loadPictures()
 
+        binding.previousPageBtn.isEnabled = false
+
+        binding.previousPageBtn.setOnClickListener {
+            binding.picturesList.visibility = INVISIBLE
+            viewModel.showPreviousPage()
+        }
+        binding.nextPageBtn.setOnClickListener {
+            binding.picturesList.visibility = INVISIBLE
+            viewModel.showNextPage()
+        }
+
         with(viewModel) {
             loading.observeNonNull(this@FeatureActivity) {
                 binding.progressBar.isVisible = it
                 hideErrorStatePlaceholder()
             }
             response.observeNonNull(this@FeatureActivity) { pictures ->
+                binding.picturesList.isVisible = true
                 binding.picturesList.adapter = PicturesAdapter(pictures)
                 hideErrorStatePlaceholder()
+                binding.previousPageBtn.isVisible = true
+                binding.nextPageBtn.isVisible = true
+            }
+            previousPageBtnEnabled.observeNonNull(this@FeatureActivity) {
+                binding.previousPageBtn.isEnabled = it
+            }
+            nextPageBtnEnabled.observeNonNull(this@FeatureActivity) {
+                binding.nextPageBtn.isEnabled = it
+            }
+            error.observeNonNull(this@FeatureActivity) {
+                if (it) handleErrorState(R.drawable.network_error, R.string.error_state)
             }
             emptyList.observe(this@FeatureActivity, Observer {
                 handleErrorState(R.drawable.no_data_found, R.string.empty_state)
-            })
-            error.observe(this@FeatureActivity, Observer {
-                handleErrorState(R.drawable.network_error, R.string.error_state)
+                binding.nextPageBtn.isEnabled = false
             })
         }
     }
@@ -79,5 +105,13 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
             errorStateImage.setImageDrawable(getDrawable(imageId))
             errorStateText.text = getString(messageId)
         }
+        with(binding) {
+            previousPageBtn.isVisible = false
+            nextPageBtn.isVisible = false
+        }
+    }
+
+    private companion object {
+        private const val TAG = "FeatureActivity"
     }
 }
