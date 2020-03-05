@@ -2,7 +2,6 @@ package com.example.hsexercise.feature
 
 import android.app.Application
 import android.util.Log
-import androidx.annotation.UiThread
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.hsexercise.common.NetworkProvider
 import com.example.hsexercise.feature.database.FeatureModel
-import com.example.hsexercise.feature.database.FeatureRoomDatabase
+import com.example.hsexercise.common.FeatureRoomDatabase
 import com.example.hsexercise.repository.PicturesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -5,9 +5,9 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
-import android.view.View.INVISIBLE
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.example.hsexercise.R
@@ -48,17 +48,21 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
 
     override fun onViewLoad(savedInstanceState: Bundle?) {
         connectivityManager.registerNetworkCallback(NetworkRequest.Builder().build(), connectivityCallback)
+        val picturesList = binding.picturesList
+        val previousPageBtn = binding.previousPageBtn
+        val nextPageBtn =  binding.nextPageBtn
 
-        viewModel.loadPictures()
+        if (savedInstanceState == null) {
+            viewModel.loadPictures()
+        }
 
-        binding.previousPageBtn.isEnabled = false
-
-        binding.previousPageBtn.setOnClickListener {
-            binding.picturesList.visibility = INVISIBLE
+        previousPageBtn.isEnabled = false
+        previousPageBtn.setOnClickListener {
+            picturesList.isInvisible = true
             viewModel.showPreviousPage()
         }
-        binding.nextPageBtn.setOnClickListener {
-            binding.picturesList.visibility = INVISIBLE
+        nextPageBtn.setOnClickListener {
+            picturesList.isInvisible = true
             viewModel.showNextPage()
         }
 
@@ -68,26 +72,26 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
                 hideErrorStatePlaceholder()
             }
             response.observeNonNull(this@FeatureActivity) { pictures ->
-                binding.picturesList.isVisible = true
-                binding.picturesList.adapter = PicturesAdapter(pictures)
+                picturesList.isVisible = true
+                picturesList.adapter = PicturesAdapter(pictures)
                 hideErrorStatePlaceholder()
-                binding.previousPageBtn.isVisible = true
-                binding.nextPageBtn.isVisible = true
+                previousPageBtn.isVisible = true
+                nextPageBtn.isVisible = true
             }
             previousPageBtnEnabled.observeNonNull(this@FeatureActivity) {
-                binding.previousPageBtn.isEnabled = it
+                previousPageBtn.isEnabled = it
             }
             nextPageBtnEnabled.observeNonNull(this@FeatureActivity) {
-                binding.nextPageBtn.isEnabled = it
+                nextPageBtn.isEnabled = it
             }
             error.observeNonNull(this@FeatureActivity) {
                 if (it) handleErrorState(R.drawable.network_error, R.string.error_state)
-                binding.previousPageBtn.isEnabled = if (it) !it else (previousPageBtnEnabled.value ?: false)
-                binding.nextPageBtn.isEnabled = if (it) !it else (nextPageBtnEnabled.value ?: true)
+                previousPageBtn.isEnabled = if (it) !it else (previousPageBtnEnabled.value ?: false)
+                nextPageBtn.isEnabled = if (it) !it else (nextPageBtnEnabled.value ?: true)
             }
             emptyList.observe(this@FeatureActivity, Observer {
                 handleErrorState(R.drawable.no_data_found, R.string.empty_state)
-                binding.nextPageBtn.isEnabled = false
+                nextPageBtn.isEnabled = false
             })
         }
     }
