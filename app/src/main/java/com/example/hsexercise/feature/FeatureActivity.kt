@@ -82,6 +82,8 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
             }
             error.observeNonNull(this@FeatureActivity) {
                 if (it) handleErrorState(R.drawable.network_error, R.string.error_state)
+                binding.previousPageBtn.isEnabled = if (it) !it else (previousPageBtnEnabled.value ?: false)
+                binding.nextPageBtn.isEnabled = if (it) !it else (nextPageBtnEnabled.value ?: true)
             }
             emptyList.observe(this@FeatureActivity, Observer {
                 handleErrorState(R.drawable.no_data_found, R.string.empty_state)
@@ -104,10 +106,6 @@ class FeatureActivity : BaseActivity<FeatureViewModel>() {
             root.isVisible = true
             errorStateImage.setImageDrawable(getDrawable(imageId))
             errorStateText.text = getString(messageId)
-        }
-        with(binding) {
-            previousPageBtn.isVisible = false
-            nextPageBtn.isVisible = false
         }
     }
 

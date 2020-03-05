@@ -1,12 +1,11 @@
 package com.example.hsexercise.feature.database
 
 import androidx.room.*
-import io.reactivex.Maybe
 
 @Dao
 interface FeatureTableDao {
-    @Query("SELECT * FROM feature")
-    fun getAll(): List<FeatureModel>
+    @Query("SELECT * FROM feature WHERE page = :pageNumber")
+    fun getAllForPage(pageNumber: Int): List<FeatureModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(models: List<FeatureModel>)
@@ -22,5 +21,6 @@ data class FeatureModel(
     val author: String,
     val width: Int,
     val height: Int,
-    var url: String
+    var url: String,
+    var page: Int? = null
 )
