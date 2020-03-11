@@ -7,14 +7,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.hsexercise.common.NetworkProvider
 import com.example.hsexercise.feature.database.FeatureModel
 import com.example.hsexercise.common.FeatureRoomDatabase
 import com.example.hsexercise.repository.PicturesRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FeatureViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -27,12 +27,6 @@ class FeatureViewModel(application: Application) : AndroidViewModel(application)
     private val _emptyList = MutableLiveData<Nothing>()
     // The ViewModel maintains a reference to the repository to get data
     private val repository: PicturesRepository
-
-    private var getPicturesJobFromDB = Job()
-    private var getPicturesJobFromNetwork = Job()
-
-    private val networkCoroutineScope = CoroutineScope(getPicturesJobFromNetwork + Dispatchers.Main)
-    private val dbCoroutineScope = CoroutineScope(getPicturesJobFromDB + Dispatchers.IO)
 
     private var page = 1
     private var pressedButton: Button = Button.NONE
@@ -78,7 +72,7 @@ class FeatureViewModel(application: Application) : AndroidViewModel(application)
 
         // We're still executing code on the main thread (because Retrofit does all its work on a background thread),
         // but now we're letting coroutines manage concurrency.
-        networkCoroutineScope.launch {
+        viewModelScope.launch {
             val getPicturesDeferred = repository.getPicturesFromNetworkAsync(pageNumber)
             try {
                 val response: List<FeatureModel> = getPicturesDeferred.await()
@@ -132,24 +126,28 @@ class FeatureViewModel(application: Application) : AndroidViewModel(application)
                 page = pageNumber
             )
         }
-        dbCoroutineScope.launch {
-            repository.insertAllPictures(picturesWithPageNumber)
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.insertAllPictures(picturesWithPageNumber)
+            }
         }
     }
 
-    private fun getPicturesFromDatabase(pageNumber: Int) = dbCoroutineScope.launch {
+    private fun getPicturesFromDatabase(pageNumber: Int) = viewModelScope.launch {
         Log.d(TAG, "getPicturesFromDatabase")
-        try {
-            val pictures = repository.getPicturesForPageFromDB(pageNumber)
-            // Checks to see if that page exists in the database,
-            // if it does then display those products otherwise make a call to the endpoint
-            if (pictures.isNullOrEmpty()) {
-                loadPicturesFromNetwork(page)
-            } else {
-                onLoaded(pictures, isLoadedFromNetwork = false)
+        withContext(Dispatchers.IO) {
+            try {
+                val pictures = repository.getPicturesForPageFromDB(pageNumber)
+                // Checks to see if that page exists in the database,
+                // if it does then display those products otherwise make a call to the endpoint
+                if (pictures.isNullOrEmpty()) {
+                    loadPicturesFromNetwork(page)
+                } else {
+                    onLoaded(pictures, isLoadedFromNetwork = false)
+                }
+            } catch (e: Exception) {
+                handleError(e)
             }
-        } catch (e: Exception) {
-            handleError(e)
         }
     }
 

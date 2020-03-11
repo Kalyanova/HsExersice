@@ -34,10 +34,11 @@ class PicturesAdapter(
         fun bind(picture: FeatureModel) {
             viewBinding.apply {
                 author.text = picture.author
-                desc.text = viewBinding.root.context.getString(R.string.image_dimensions, picture.width, picture.height)
+                desc.text = root.context.getString(R.string.image_dimensions, picture.width, picture.height)
 
                 with(picture) {
-                    val url = "$PICTURE_BASE_URL/$id/$width/$height"
+                    // To download images with original size, replace IMAGE_WIDTH and IMAGE_HEIGHT with width and height
+                    val url = "$PICTURE_BASE_URL/$id/$IMAGE_WIDTH/$IMAGE_HEIGHT"
                     picture.url = url
 
                     val options = RequestOptions()
@@ -55,5 +56,7 @@ class PicturesAdapter(
 
     private companion object {
         private const val PICTURE_BASE_URL = "https://picsum.photos/id"
+        private const val IMAGE_WIDTH = 300
+        private const val IMAGE_HEIGHT = 194
     }
 }
